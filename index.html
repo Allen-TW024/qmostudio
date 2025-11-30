@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qmo Studio</title>
+  <style>
+    :root {
+      --bg: #0b1221;
+      --panel: #111a2d;
+      --accent: #6ee7ff;
+      --muted: #9fb2d6;
+      --text: #e6ecfa;
+      --card-border: rgba(255, 255, 255, 0.06);
+      --shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(110, 231, 255, 0.08), transparent 35%),
+        radial-gradient(circle at 80% 0%, rgba(139, 92, 246, 0.08), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 20px clamp(20px, 6vw, 80px);
+      background: linear-gradient(180deg, rgba(11, 18, 33, 0.95) 0%, rgba(11, 18, 33, 0.7) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .logo-placeholder {
+      justify-self: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      border: 2px dashed rgba(230, 236, 250, 0.4);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .hero {
+      padding: 70px clamp(20px, 6vw, 80px) 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      align-items: center;
+      gap: 32px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 4vw, 46px);
+      margin: 0 0 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .preview-tile {
+      background: linear-gradient(140deg, rgba(110, 231, 255, 0.18), rgba(147, 197, 253, 0.08));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      height: 140px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-tile::after,
+    .preview-tile::before {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      filter: blur(15px);
+    }
+
+    .preview-tile::before {
+      width: 140px;
+      height: 140px;
+      top: -40px;
+      right: -20px;
+    }
+
+    .preview-tile::after {
+      width: 90px;
+      height: 90px;
+      bottom: -20px;
+      left: -10px;
+    }
+
+    .apps-section {
+      padding: 10px clamp(20px, 6vw, 80px) 80px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .section-heading span {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .app-card {
+      background: var(--panel);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      min-height: 320px;
+    }
+
+    .app-card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .app-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .app-preview {
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.3), rgba(11, 18, 33, 0.8));
+      padding: 16px;
+      min-height: 140px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .preview-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .preview-visual {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .preview-block {
+      height: 60px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(11, 18, 33, 0.4));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      background: linear-gradient(120deg, rgba(110, 231, 255, 0.25), rgba(147, 197, 253, 0.14));
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+      background: linear-gradient(120deg, rgba(110, 231, 255, 0.3), rgba(147, 197, 253, 0.2));
+    }
+
+    .ghost {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    footer {
+      padding: 20px clamp(20px, 6vw, 80px) 40px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="brand">Qmo Studio</div>
+    <div class="logo-placeholder" aria-label="Logo placeholder">Square Logo</div>
+    <div></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>在 Qmo Studio，打造日常好用的 App</h1>
+      <p>把每個使用情境拆解成直覺的小工具，透過簡潔的設計與穩定的體驗，讓功能在各種裝置上保持順手。</p>
+    </div>
+    <div class="preview-grid">
+      <div class="preview-tile" aria-hidden="true"></div>
+      <div class="preview-tile" aria-hidden="true"></div>
+      <div class="preview-tile" aria-hidden="true"></div>
+      <div class="preview-tile" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="apps-section">
+    <div class="section-heading">
+      <h2>上架中的作品</h2>
+      <span>預覽、功能亮點與 App Store 連結位址</span>
+    </div>
+
+    <div class="app-grid">
+      <article class="app-card">
+        <h3>TransMenu：外國菜單翻譯與點餐</h3>
+        <p>在旅途中快速翻譯與記錄餐點，支援離線查詢與常用短語收藏，讓點餐更安心。</p>
+        <div class="app-preview">
+          <div class="preview-label">即時預覽</div>
+          <div class="preview-visual">
+            <div class="preview-block" aria-hidden="true"></div>
+            <div class="preview-block" aria-hidden="true"></div>
+            <div class="preview-block" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="button" href="https://apps.apple.com/tw/app/transmenu-%E5%A4%96%E5%9C%8B%E8%8F%9C%E5%96%AE%E7%BF%BB%E8%AD%AF%E8%88%87%E9%BB%9E%E9%A4%90/id6755309622" target="_blank" rel="noreferrer noopener">在 App Store 查看</a>
+          <a class="button ghost" href="#" aria-label="預留的第二個連結位置">預留連結</a>
+        </div>
+      </article>
+
+      <article class="app-card">
+        <h3>下一個 App</h3>
+        <p>這裡保留給下一個即將發布的作品，放上核心功能簡介與最新進度。</p>
+        <div class="app-preview">
+          <div class="preview-label">預覽占位</div>
+          <div class="preview-visual">
+            <div class="preview-block" aria-hidden="true"></div>
+            <div class="preview-block" aria-hidden="true"></div>
+            <div class="preview-block" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="button" href="#" aria-label="預留的 App Store 連結">預留 App Store 連結</a>
+        </div>
+      </article>
+
+      <article class="app-card">
+        <h3>還有更多</h3>
+        <p>可以放置測試版本、網頁體驗或媒體報導的入口，讓訪客快速找到更新。</p>
+        <div class="app-preview">
+          <div class="preview-label">互動截圖占位</div>
+          <div class="preview-visual">
+            <div class="preview-block" aria-hidden="true"></div>
+            <div class="preview-block" aria-hidden="true"></div>
+            <div class="preview-block" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="button ghost" href="#">加入更多連結</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer>
+    Qmo Studio · 建立於 GitHub Pages · 歡迎將自製正方形 Logo 放入頂端空位
+  </footer>
+</body>
+</html>
