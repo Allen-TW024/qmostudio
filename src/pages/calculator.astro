@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="計算機 Calculator — QmoStudio"
+  description="一台圓滾滾的四則運算計算機，支援鍵盤輸入。"
+>
+  <section class="mx-auto max-w-md px-4 pt-16 pb-8">
+    <div class="text-center">
+      <span class="wiggle inline-block text-6xl">🧮</span>
+      <h1 class="mt-4 text-4xl font-extrabold">計算機</h1>
+      <p class="mt-1 font-semibold text-ink/50" style="font-family: var(--font-display);">Calculator</p>
+    </div>
+
+    <div class="card-pop mt-8 p-5" id="calc">
+      <!-- 螢幕 -->
+      <div class="rounded-2xl border-3 border-ink bg-ink px-4 py-5 text-right">
+        <div id="calcHistory" class="h-5 truncate text-sm text-white/50" style="font-family: var(--font-display);"></div>
+        <div id="calcDisplay" class="mt-1 truncate text-4xl font-extrabold text-sunny" style="font-family: var(--font-display);">0</div>
+      </div>
+
+      <!-- 按鍵 -->
+      <div class="mt-5 grid grid-cols-4 gap-3" id="calcKeys">
+        <button data-action="clear" class="btn-pop justify-center !px-0 bg-coral text-white">AC</button>
+        <button data-action="delete" class="btn-pop justify-center !px-0 bg-peach">⌫</button>
+        <button data-action="percent" class="btn-pop justify-center !px-0 bg-peach">%</button>
+        <button data-op="/" class="btn-pop justify-center !px-0 bg-sky text-white">÷</button>
+
+        <button data-digit="7" class="btn-pop justify-center !px-0 bg-white">7</button>
+        <button data-digit="8" class="btn-pop justify-center !px-0 bg-white">8</button>
+        <button data-digit="9" class="btn-pop justify-center !px-0 bg-white">9</button>
+        <button data-op="*" class="btn-pop justify-center !px-0 bg-sky text-white">×</button>
+
+        <button data-digit="4" class="btn-pop justify-center !px-0 bg-white">4</button>
+        <button data-digit="5" class="btn-pop justify-center !px-0 bg-white">5</button>
+        <button data-digit="6" class="btn-pop justify-center !px-0 bg-white">6</button>
+        <button data-op="-" class="btn-pop justify-center !px-0 bg-sky text-white">−</button>
+
+        <button data-digit="1" class="btn-pop justify-center !px-0 bg-white">1</button>
+        <button data-digit="2" class="btn-pop justify-center !px-0 bg-white">2</button>
+        <button data-digit="3" class="btn-pop justify-center !px-0 bg-white">3</button>
+        <button data-op="+" class="btn-pop justify-center !px-0 bg-sky text-white">+</button>
+
+        <button data-digit="0" class="btn-pop col-span-2 justify-center !px-0 bg-white">0</button>
+        <button data-digit="." class="btn-pop justify-center !px-0 bg-white">.</button>
+        <button data-action="equals" class="btn-pop justify-center !px-0 bg-mint">=</button>
+      </div>
+    </div>
+
+    <p class="mt-6 text-center text-sm text-ink/50">
+      💡 也可以直接用鍵盤輸入（Enter 計算、Esc 清除）
+    </p>
+  </section>
+
+  <script>
+    // 簡單的四則運算計算機：即時左到右結算，不使用 eval
+    let current = '0'; // 目前輸入中的數字
+    let previous: number | null = null; // 上一個結算結果
+    let operator: string | null = null;
+    let justEvaluated = false;
+
+    const display = document.getElementById('calcDisplay')!;
+    const history = document.getElementById('calcHistory')!;
+
+    const OP_LABEL: Record<string, string> = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+
+    function formatNumber(n: number): string {
+      if (!Number.isFinite(n)) return '🙈 不能這樣算';
+      // 避免浮點誤差（0.1+0.2）並限制長度
+      const rounded = Math.round(n * 1e10) / 1e10;
+      const s = String(rounded);
+      return s.length > 14 ? rounded.toPrecision(10).replace(/\.?0+$/, '') : s;
+    }
+
+    function compute(a: number, op: string, b: number): number {
+      switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return a / b;
+        default: return b;
+      }
+    }
+
+    function render() {
+      display.textContent = current;
+      history.textContent =
+        previous !== null && operator ? `${formatNumber(previous)} ${OP_LABEL[operator]}` : '';
+    }
+
+    function inputDigit(d: string) {
+      if (justEvaluated) {
+        current = '0';
+        previous = null;
+        operator = null;
+        justEvaluated = false;
+      }
+      if (d === '.') {
+        if (current.includes('.')) return;
+        current += '.';
+      } else {
+        current = current === '0' ? d : current + d;
+      }
+      if (current.length > 14) current = current.slice(0, 14);
+      render();
+    }
+
+    function inputOperator(op: string) {
+      const value = parseFloat(current);
+      if (previous !== null && operator && !justEvaluated) {
+        previous = compute(previous, operator, value);
+      } else {
+        previous = value;
+      }
+      operator = op;
+      current = '0';
+      justEvaluated = false;
+      render();
+    }
+
+    function equals() {
+      if (previous === null || operator === null) return;
+      const result = compute(previous, operator, parseFloat(current));
+      current = formatNumber(result);
+      previous = null;
+      operator = null;
+      justEvaluated = true;
+      render();
+    }
+
+    function clearAll() {
+      current = '0';
+      previous = null;
+      operator = null;
+      justEvaluated = false;
+      render();
+    }
+
+    function deleteLast() {
+      if (justEvaluated) return clearAll();
+      current = current.length > 1 ? current.slice(0, -1) : '0';
+      render();
+    }
+
+    function percent() {
+      current = formatNumber(parseFloat(current) / 100);
+      render();
+    }
+
+    document.getElementById('calcKeys')!.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('button');
+      if (!btn) return;
+      if (btn.dataset.digit) inputDigit(btn.dataset.digit);
+      else if (btn.dataset.op) inputOperator(btn.dataset.op);
+      else if (btn.dataset.action === 'equals') equals();
+      else if (btn.dataset.action === 'clear') clearAll();
+      else if (btn.dataset.action === 'delete') deleteLast();
+      else if (btn.dataset.action === 'percent') percent();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (/^[0-9.]$/.test(e.key)) inputDigit(e.key);
+      else if (['+', '-', '*', '/'].includes(e.key)) inputOperator(e.key);
+      else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); equals(); }
+      else if (e.key === 'Escape') clearAll();
+      else if (e.key === 'Backspace') deleteLast();
+      else if (e.key === '%') percent();
+    });
+  </script>
+</BaseLayout>

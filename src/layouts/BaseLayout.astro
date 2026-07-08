@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'QmoStudio — Allen 的小工具遊樂場，收集各種突發奇想做出來的網頁小工具。',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.site} />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <header class="sticky top-4 z-50 px-4">
+      <nav class="card-pop mx-auto flex max-w-4xl items-center justify-between px-5 py-3">
+        <a href="/" class="flex items-center gap-2 text-xl font-extrabold" style="font-family: var(--font-display);">
+          <span class="wiggle grid h-9 w-9 place-items-center rounded-xl border-3 border-ink bg-coral text-base text-white">Q</span>
+          <span>Qmo<span class="text-coral">Studio</span></span>
+        </a>
+        <div class="flex items-center gap-2 text-sm font-bold sm:gap-4 sm:text-base" style="font-family: var(--font-display);">
+          <a href="/#tools" class="rounded-full px-3 py-1.5 transition-colors hover:bg-sunny">工具箱</a>
+          <a href="/about" class="rounded-full px-3 py-1.5 transition-colors hover:bg-sunny">關於我</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="mt-20 border-t-3 border-ink bg-white/70 px-4 py-8">
+      <div class="mx-auto flex max-w-4xl flex-col items-center gap-2 text-center text-sm">
+        <p class="font-bold" style="font-family: var(--font-display);">
+          QmoStudio <span class="text-ink/50">·</span> 突發奇想小工具遊樂場 🎡
+        </p>
+        <p class="text-ink/60">© {new Date().getFullYear()} QmoStudio · Made with 🧋 in Taiwan</p>
+      </div>
+    </footer>
+  </body>
+</html>

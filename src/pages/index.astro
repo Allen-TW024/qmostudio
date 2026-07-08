@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { tools } from '../data/tools';
+---
+
+<BaseLayout title="QmoStudio — 小工具遊樂場 Tiny Tools Playground">
+  <!-- Hero -->
+  <section class="relative overflow-hidden px-4 pt-20 pb-16 text-center sm:pt-28">
+    <div class="blob left-[6%] top-[18%] h-36 w-36 bg-sunny"></div>
+    <div class="blob right-[8%] top-[10%] h-28 w-28 bg-coral" style="animation-delay: -3s;"></div>
+    <div class="blob bottom-[4%] left-[18%] h-24 w-24 bg-grape" style="animation-delay: -5s;"></div>
+    <div class="blob bottom-[10%] right-[16%] h-32 w-32 bg-mint" style="animation-delay: -1.5s;"></div>
+
+    <div class="relative mx-auto max-w-3xl">
+      <span class="card-pop inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold" style="font-family: var(--font-display);">
+        <span class="wiggle">👋</span> 嗨，我是 Allen
+      </span>
+      <h1 class="mt-6 text-4xl font-extrabold leading-tight sm:text-6xl">
+        突發奇想<br />
+        <span class="inline-block -rotate-1 rounded-2xl border-3 border-ink bg-sunny px-4 py-1 shadow-pop">小工具</span>
+        遊樂場
+      </h1>
+      <p class="mt-4 text-lg font-semibold text-ink/60" style="font-family: var(--font-display);">
+        A playground of tiny tools, built on a whim.
+      </p>
+      <p class="mx-auto mt-4 max-w-xl leading-relaxed text-ink/80">
+        這裡收集了我心血來潮做出來的各種網頁小工具，想到什麼就做什麼，做完就放上來。歡迎隨意玩玩！
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <a href="#tools" class="btn-pop bg-coral text-white">🧰 逛逛工具箱</a>
+        <a href="/about" class="btn-pop bg-white">🙋 認識我</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section id="tools" class="mx-auto max-w-4xl scroll-mt-28 px-4 py-12">
+    <div class="mb-8 text-center">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">🧰 工具箱</h2>
+      <p class="mt-1 font-semibold text-ink/50" style="font-family: var(--font-display);">The Toolbox</p>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {tools.map((tool) => <ToolCard tool={tool} />)}
+    </div>
+  </section>
+</BaseLayout>
